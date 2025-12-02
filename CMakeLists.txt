@@ -17,6 +17,7 @@ add_executable(bibliothequeconsole
         src/emprunts.c
         src/fichiers.c
         src/stats.c
+        src/util.c
 )
 
 

@@ -24,7 +24,11 @@ void retournerLivre(Livre *livres,Emprunt *emprunts, int nbEmprunts, int idLivre
 
 void chargerEmprunts(Emprunt *emprunts, int *nbEmprunts);
 
-void detecterRetards(void);
+void detecterRetards(int nbEmprunts, Emprunt *emprunts);
+
+int calculerAmende(const char *dateE, const char *dateR);
+
+void afficherAmendes(int nbEmprunts, Emprunt *emprunts);
 
 
 #endif

@@ -166,7 +166,6 @@ void lancerMenuConsole() {
                             if(scanf("%d", &idLivre) == 1) {
                                 int c; while ((c = getchar()) != '\n' && c != EOF) {}
                                 char dateRetour[11];
-                                printf("Entrez la date de retour (JJ/MM/AAAA) : ");
                                 fgets(dateRetour, sizeof(dateRetour), stdin);
                                 dateRetour[strcspn(dateRetour, "\n")] = 0; // enlever \n
                                 retournerLivre(livres,emprunts, nbEmprunts, idLivre, dateRetour);
@@ -176,7 +175,7 @@ void lancerMenuConsole() {
 
 
                         case 3:
-                            detecterRetards();
+                            detecterRetards(nbEmprunts,emprunts);
                             break;
                         case 0: break;
                         default: printf("Choix invalide.\n");
