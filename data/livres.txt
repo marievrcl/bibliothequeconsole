@@ -1,0 +1,2 @@
+1;Le rouge et le noir;Stendhal;Roman;1234;1880;0
+2;La cigale et la fourmie;Lafontaine;Poesie;1234;1880;0
