@@ -10,6 +10,7 @@
 #include <string.h>
 #include <sys/stat.h>
 #include "fichiers.h"
+#include "emprunts.h"
 
 /*
  * VERSION FIXÉE — UTILISE TOUJOURS LE DOSSIER "data/" DU PROJET

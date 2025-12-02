@@ -51,4 +51,6 @@ void trierLivres(Livre *livres, int nbLivres);
 // Recherche un livre par un mot ou une partie du titre (recherche flexible)
 void rechercherLivrePartiel(Livre *livres, int nbLivres);
 
+int LivreEstDisponible(Livre *livres, int nbLivres, const char *isbn);
+
 #endif // LIVRES_H

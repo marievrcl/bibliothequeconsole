@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "stats.h"
+#include "emprunts.h"
 
 // Affiche les statistiques globales de la bibliothèque
 void afficherStatistiques(Emprunt *emprunts, int nbEmprunts,

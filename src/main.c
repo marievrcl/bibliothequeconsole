@@ -157,7 +157,8 @@ void lancerMenuConsole() {
 
                     switch(sous){
                         case 1:
-                            emprunterLivre(livres,nbLivres, utilisateurs, nbUsers, emprunts, &nbEmprunts);
+                            // exemple : emprunter le livre avec idLivre et idUtilisateur
+                            emprunterLivre(livres, nbLivres, utilisateurs, nbUsers, emprunts, &nbEmprunts);
                             break;
                         case 2: {
                             int idLivre;
@@ -168,14 +169,14 @@ void lancerMenuConsole() {
                                 printf("Entrez la date de retour (JJ/MM/AAAA) : ");
                                 fgets(dateRetour, sizeof(dateRetour), stdin);
                                 dateRetour[strcspn(dateRetour, "\n")] = 0; // enlever \n
-                                retournerLivre(emprunts, nbEmprunts, idLivre, dateRetour);
+                                retournerLivre(livres,emprunts, nbEmprunts, idLivre, dateRetour);
                             }
                             break;
                         }
 
 
                         case 3:
-                            verifierRetards(emprunts, nbEmprunts);
+                            detecterRetards();
                             break;
                         case 0: break;
                         default: printf("Choix invalide.\n");

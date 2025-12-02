@@ -141,6 +141,15 @@ void afficherLivres(Livre *livres, int nbLivres) {
     }
 }
 
+int LivreEstDisponible(Livre *livres, int nbLivres, const char *isbn){
+    for (int i = 0; i < nbLivres; i++) {
+        if (strcmp(livres[i].isbn, isbn) == 0)
+            return livres[i].disponible;
+    }
+    return 0; // livre non trouvé → pas disponible
+}
+
+
 // ---------------------------------------------------------
 // Recherche livre par titre (retourne index ou -1)
 // ---------------------------------------------------------
