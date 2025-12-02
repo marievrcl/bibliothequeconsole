@@ -10,7 +10,7 @@
 #define F_EMPRUNTS DATA_DIR "/emprunts.txt"
 
 typedef struct {
-    int idLivre;
+    char isbn[20];
     int idUtilisateur;
     char dateEmprunt[20];
     char dateRetour[20];

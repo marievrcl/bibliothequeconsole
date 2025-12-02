@@ -75,7 +75,7 @@ void livresLesPlusEmpruntes(Emprunt *emprunts, int nbEmprunts, Livre *livres, in
     // Compte le nombre d'emprunts par livre
     for (int i = 0; i < nbEmprunts; i++) {
         for (int j = 0; j < nbLivres; j++) {
-            if (emprunts[i].idLivre == livres[j].id)
+            if (emprunts[i].isbn == livres[j].isbn)
                 count[j]++;
         }
     }

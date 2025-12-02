@@ -23,7 +23,7 @@ typedef struct {
     char categorie[50];    // Catégorie (roman, BD, etc.)
     char isbn[20];         // Code ISBN
     int  annee;            // Année de publication
-    int  disponible;       // 1 = disponible, 0 = actuellement emprunté
+    int  disponible;      // 1 = disponible, 0 = actuellement emprunté
 } Livre;
 
 // Ajoute un nouveau livre dans le tableau et incrémente nbLivres

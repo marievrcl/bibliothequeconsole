@@ -169,7 +169,7 @@ void chargerEmprunts(Emprunt *e, int *nbE) {
     }
 
     while (fscanf(f, "%d;%d;%10[^;];%10[^\n]\n",
-              &e[*nbE].idLivre,
+              &e[*nbE].isbn,
               &e[*nbE].idUtilisateur,
               e[*nbE].dateEmprunt,
               e[*nbE].dateRetour) == 4)
@@ -197,7 +197,7 @@ void sauvegarderEmprunts(Emprunt *e, int nbE) {
 
     for (int i = 0; i < nbE; i++) {
         fprintf(f, "%d;%d;%s;%s\n",
-                e[i].idLivre,
+                e[i].isbn,
                 e[i].idUtilisateur,
                 e[i].dateEmprunt,
                 e[i].dateRetour[0] ? e[i].dateRetour : "");

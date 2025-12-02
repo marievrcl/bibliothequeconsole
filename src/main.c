@@ -10,6 +10,7 @@
 #include "emprunts.h"
 #include "fichiers.h"
 #include "stats.h"
+#include <util.h>
 
 // ---------------------------------------------------------
 // Fonction pour lancer le menu console
@@ -162,14 +163,10 @@ void lancerMenuConsole() {
                             break;
                         case 2: {
                             int idLivre;
-                            printf("ID du livre à retourner : ");
-                            if(scanf("%d", &idLivre) == 1) {
-                                int c; while ((c = getchar()) != '\n' && c != EOF) {}
                                 char dateRetour[11];
                                 fgets(dateRetour, sizeof(dateRetour), stdin);
                                 dateRetour[strcspn(dateRetour, "\n")] = 0; // enlever \n
                                 retournerLivre(livres,emprunts, nbEmprunts, idLivre, dateRetour);
-                            }
                             break;
                         }
 
