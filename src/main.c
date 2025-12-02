@@ -82,9 +82,12 @@ void lancerMenuConsole() {
                         case 5: {
                             char titre[100];
                             printf("Entrez le titre à rechercher : ");
-                            int f; while ((f = getchar()) != '\n' && f != EOF) {}
-                            fgets(titre, sizeof(titre), stdin);
-                            titre[strcspn(titre, "\n")] = 0;
+                            if (!fgets(titre, sizeof(titre), stdin)) {
+                                printf("Erreur de lecture.\n");
+                                break;
+                            }
+                            titre[strcspn(titre, "\n")] = 0;  // supprime le \n final
+
                             int idx = rechercherLivre(livres, nbLivres, titre);
                             if (idx >= 0) {
                                 printf("Livre trouvé : ID=%d, Titre=%s, Auteur=%s\n",
