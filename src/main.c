@@ -20,7 +20,7 @@ void lancerMenuConsole() {
     Utilisateur utilisateurs[100];
     Emprunt emprunts[100];
 
-    int nbLivres = 0, nbUsers = 0, nbEmprunts = 0;
+    int nbLivres = 0, nbUsers = 0, nbEmprunts = 100;
 
     // ========= CHARGEMENT DES DONNÉES =========
     chargerLivres(livres, &nbLivres);
@@ -163,11 +163,16 @@ void lancerMenuConsole() {
                             int idLivre;
                             printf("ID du livre à retourner : ");
                             if(scanf("%d", &idLivre) == 1) {
-                                int c; while ((c = getchar()) != '\n' && c != EOF) {} // vider le buffer
-                                retournerLivre(emprunts, &nbEmprunts, idLivre);
+                                int c; while ((c = getchar()) != '\n' && c != EOF) {}
+                                char dateRetour[11];
+                                printf("Entrez la date de retour (JJ/MM/AAAA) : ");
+                                fgets(dateRetour, sizeof(dateRetour), stdin);
+                                dateRetour[strcspn(dateRetour, "\n")] = 0; // enlever \n
+                                retournerLivre(emprunts, nbEmprunts, idLivre, dateRetour);
                             }
                             break;
                         }
+
 
                         case 3:
                             verifierRetards(emprunts, nbEmprunts);

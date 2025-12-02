@@ -2,6 +2,10 @@
 // Created by Marie Viricel on 02/12/2025.
 //
 
+//
+// Created by Marie Viricel on 02/12/2025.
+//
+
 #include <stdio.h>
 #include <string.h>
 #include <sys/stat.h>
@@ -163,13 +167,11 @@ void chargerEmprunts(Emprunt *e, int *nbE) {
         return;
     }
 
-    while (fscanf(f, "%d;%d;%d;%10[^;];%10[^;];%d\n",
-                  &e[*nbE].idEmprunt,
-                  &e[*nbE].idLivre,
-                  &e[*nbE].idUtilisateur,
-                  e[*nbE].dateEmprunt,
-                  e[*nbE].dateRetour,
-                  &e[*nbE].retard) == 6)
+    while (fscanf(f, "%d;%d;%10[^;];%10[^\n]\n",
+              &e[*nbE].idLivre,
+              &e[*nbE].idUtilisateur,
+              e[*nbE].dateEmprunt,
+              e[*nbE].dateRetour) == 4)
     {
         (*nbE)++;
     }
@@ -193,17 +195,18 @@ void sauvegarderEmprunts(Emprunt *e, int nbE) {
     }
 
     for (int i = 0; i < nbE; i++) {
-        fprintf(f, "%d;%d;%d;%s;%s;%d\n",
-                e[i].idEmprunt,
+        fprintf(f, "%d;%d;%s;%s\n",
                 e[i].idLivre,
                 e[i].idUtilisateur,
                 e[i].dateEmprunt,
-                e[i].dateRetour,
-                e[i].retard);
+                e[i].dateRetour[0] ? e[i].dateRetour : "");
     }
+
 
     fclose(f);
 }
+
+
 
 
 
