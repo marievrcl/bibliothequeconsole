@@ -15,42 +15,53 @@
 #ifndef LIVRES_H
 #define LIVRES_H
 
-// Représente un livre dans la bibliothèque
+// Structure représentant un livre dans la bibliothèque
 typedef struct {
     int  id;               // Identifiant unique du livre
     char titre[100];       // Titre du livre
     char auteur[100];      // Nom de l'auteur
     char categorie[50];    // Catégorie (roman, BD, etc.)
-    char isbn[20];         // Code ISBN
+    char isbn[20];         // Code ISBN du livre
     int  annee;            // Année de publication
-    int  disponible;      // 1 = disponible, 0 = actuellement emprunté
+    int  disponible;       // 1 = disponible, 0 = emprunté
 } Livre;
 
-// Ajoute un nouveau livre dans le tableau et incrémente nbLivres
+// === FONCTIONS DE GESTION DE LIVRES ===
+
+// Ajoute un nouveau livre dans le tableau livres
+// Incrémente nbLivres après insertion
 void ajouterLivre(Livre *livres, int *nbLivres);
 
-// Supprime un livre à partir de son id (décale le tableau)
+// Supprime un livre existant en utilisant son id
+// Les livres suivants sont décalés pour combler le vide
 void supprimerLivre(Livre *livres, int *nbLivres, int id);
 
-// Modifie les informations d'un livre existant (recherche par id)
+// Modifie un livre existant (recherche par id)
+// Permet de changer titre, auteur, catégorie, ISBN, année
 void modifierLivre(Livre *livres, int nbLivres, int id);
 
-// Affiche la liste complète des livres sous forme de tableau
+// Affiche tous les livres sous forme de tableau lisible
 void afficherLivres(Livre *livres, int nbLivres);
 
-// Recherche un livre par son titre exact
-// Renvoie l'index dans le tableau, ou -1 si non trouvé.
+// Recherche un livre par titre exact
+// Retourne l'index du livre dans le tableau ou -1 si introuvable
 int rechercherLivre(Livre *livres, int nbLivres, char *titre);
 
-// Recherche un livre par son ISBN (utilisé dans livres.c)
+// Recherche un livre par son ISBN exact
+// Utilisé pour vérifier disponibilité ou emprunt
 int rechercherLivreParISBN(Livre *livres, int nbLivres, char *isbn);
 
-// Trie les livres par ordre alphabétique de titre (tri simple)
+// Trie les livres par ordre alphabétique de titre
+// Méthode simple par échange (bubble sort)
 void trierLivres(Livre *livres, int nbLivres);
 
-// Recherche un livre par un mot ou une partie du titre (recherche flexible)
+// Recherche un livre par mot ou partie du titre
+// Affiche tous les livres correspondants
 void rechercherLivrePartiel(Livre *livres, int nbLivres);
 
+// Vérifie si un livre est disponible à partir de son ISBN
+// Retourne 1 si disponible, 0 sinon
 int LivreEstDisponible(Livre *livres, int nbLivres, const char *isbn);
 
 #endif // LIVRES_H
+// Fin de la protection contre inclusion multiple
