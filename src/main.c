@@ -152,6 +152,7 @@ void lancerMenuConsole() {
                     printf("1. Emprunter un livre\n");
                     printf("2. Retourner un livre\n");
                     printf("3. Vérifier les emprunts non rendus\n");
+                    printf("4. Afficher les amendes\n");
                     printf("0. Retour\n");
                     printf("Choix : ");
                     if(scanf("%d",&sous)!=1) sous=0; // Lecture du sous-choix
@@ -166,6 +167,9 @@ void lancerMenuConsole() {
                             break;
                         case 3:
                             detecterRetards(nbEmprunts, emprunts); // Affiche les emprunts en retard
+                            break;
+                        case 4:  // <- nouvelle option
+                            afficherAmendes(nbEmprunts, emprunts);
                             break;
                         case 0: break; // Retour au menu principal
                         default: printf("Choix invalide.\n"); // Gestion d'une saisie incorrecte

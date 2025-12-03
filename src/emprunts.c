@@ -8,14 +8,42 @@
 #include "emprunts.h"
 #include "livres.h"
 
-
 // -------------------- Fonctions auxiliaires --------------------
 
 // Récupère la date actuelle au format "JJ/MM/AAAA"
 void getDateAujourdhui(char *date) {
-    time_t t = time(NULL);                 // Récupère le temps actuel
-    struct tm tm = *localtime(&t);         // Convertit en structure tm locale
-    sprintf(date, "%02d/%02d/%04d", tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900); // Formate la date
+    time_t t = time(NULL);                       // Récupère le temps actuel en secondes depuis 1970
+    struct tm tm = *localtime(&t);              // Convertit le temps en structure locale tm
+    sprintf(date, "%02d/%02d/%04d",              // Formate la date dans la chaîne passée en paramètre
+            tm.tm_mday, tm.tm_mon + 1, tm.tm_year + 1900);
+}
+
+// Convertit une date JJ/MM/AAAA en struct tm
+static int parseDate(const char *date, struct tm *out) {
+    int j, m, a;                                 // Variables pour jour, mois et année
+    if (sscanf(date, "%d/%d/%d", &j, &m, &a) != 3) // Extraction de jour/mois/année
+        return 0;                                // Retourne 0 si la date est invalide
+
+    memset(out, 0, sizeof(struct tm));          // Initialise toute la structure à 0
+    out->tm_mday = j;                            // Affecte le jour
+    out->tm_mon  = m - 1;                        // Affecte le mois (0–11)
+    out->tm_year = a - 1900;                     // Affecte l'année depuis 1900
+
+    return 1;                                    // Retourne 1 si la conversion a réussi
+}
+
+// Calcule la différence en jours entre deux dates JJ/MM/AAAA
+int differenceJours(const char *d1, const char *d2) {
+    struct tm t1, t2;                            // Structures tm pour chaque date
+
+    if (!parseDate(d1, &t1)) return 0;           // Convertit d1 en tm, retourne 0 si erreur
+    if (!parseDate(d2, &t2)) return 0;           // Convertit d2 en tm, retourne 0 si erreur
+
+    time_t time1 = mktime(&t1);                  // Convertit tm en time_t
+    time_t time2 = mktime(&t2);                  // Convertit tm en time_t
+
+    double diff = difftime(time2, time1) / (60 * 60 * 24); // Différence en jours
+    return (int) diff;                            // Retourne la différence en entier
 }
 
 // -------------------- Gestion des emprunts --------------------
@@ -23,149 +51,119 @@ void getDateAujourdhui(char *date) {
 // Fonction pour emprunter un livre
 void emprunterLivre(Livre *livres, int nbLivres, Utilisateur *utilisateurs, int nbUsers,
                     Emprunt *emprunts, int *nbEmprunts) {
-    int idUtilisateur=0;                   // ID de l'utilisateur qui emprunte
-    char isbn[20];                          // ISBN du livre
-    int dispo=0;                             // Disponibilité du livre
-    char date[20];                           // Date de l'emprunt
+    int idUtilisateur = 0;                        // ID de l'utilisateur emprunteur
+    char isbn[20];                                 // ISBN du livre
+    int dispo = 0;                                 // Disponibilité du livre
+    char date[20];                                 // Date de l'emprunt
 
-    printf("Saisir IdUtilisateur : ");
-    scanf("%d", &idUtilisateur);           // Saisie de l'ID utilisateur
+    printf("Saisir IdUtilisateur : ");            // Demande l'ID utilisateur
+    scanf("%d", &idUtilisateur);                  // Lit l'ID depuis l'entrée
 
-    // vider le buffer stdin pour éviter les problèmes avec fgets
     int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while ((c = getchar()) != '\n' && c != EOF);  // Vide le buffer stdin
 
-    printf("Saisir ISBN : ");
-    lireLigne(isbn, sizeof(isbn));         // Saisie de l'ISBN
+    printf("Saisir ISBN : ");                     // Demande l'ISBN
+    lireLigne(isbn, sizeof(isbn));                // Lit l'ISBN avec fgets ou équivalent
 
-    printf("Saisir date du jour de l'emprunt : ");
-    lireLigne(date, sizeof(date));         // Saisie de la date
+    printf("Saisir date du jour de l'emprunt : "); // Demande la date
+    lireLigne(date, sizeof(date));                // Lit la date
 
     // Vérifier disponibilité du livre
     for (int i = 0; i < nbLivres; i++) {
-        if (strcmp(livres[i].isbn, isbn) == 0) {
-            dispo = livres[i].disponible;  // Récupère le statut de disponibilité
+        if (strcmp(livres[i].isbn, isbn) == 0) { // Compare l'ISBN
+            dispo = livres[i].disponible;        // Récupère la disponibilité
+            break;                                // Sort de la boucle
         }
     }
 
-    if (dispo == 0) {                      // Si le livre n'est pas dispo
-        printf("Livre non disponible.\n");
-        return;
+    if (dispo == 0) {                             // Si livre indisponible
+        printf("Livre non disponible.\n");        // Affiche message
+        return;                                   // Quitte la fonction
     }
 
-    // Enregistrer l'emprunt dans le tableau
-    strcpy(emprunts[*nbEmprunts].isbn, isbn);
-    emprunts[*nbEmprunts].idUtilisateur = idUtilisateur;
-    strcpy(emprunts[*nbEmprunts].dateEmprunt, date);
-    emprunts[*nbEmprunts].dateRetour[0] = '-';  // Indique que le livre n'est pas encore rendu
+    // Enregistrer l'emprunt
+    strcpy(emprunts[*nbEmprunts].isbn, isbn);     // Copie l'ISBN
+    emprunts[*nbEmprunts].idUtilisateur = idUtilisateur; // Stocke l'ID utilisateur
+    strcpy(emprunts[*nbEmprunts].dateEmprunt, date); // Stocke la date d'emprunt
+    strcpy(emprunts[*nbEmprunts].dateRetour, "-"); // Indique que le livre n'est pas rendu
 
-    printf("L'emprunt a bien été enregistré\n");
-    (*nbEmprunts)++;                        // Incrémente le nombre total d'emprunts
+    (*nbEmprunts)++;                              // Incrémente le compteur d'emprunts
 
-    // Mettre à jour la disponibilité du livre
+    // Mettre à jour disponibilité du livre
     for (int i = 0; i < nbLivres; i++) {
         if (strcmp(livres[i].isbn, isbn) == 0) {
-            livres[i].disponible = 0;       // Livre emprunté → indisponible
-            break;
+            livres[i].disponible = 0;            // Livre maintenant indisponible
+            break;                                // Sort de la boucle
         }
     }
+
+    printf("L'emprunt a bien été enregistré.\n"); // Message de confirmation
 }
 
 // Fonction pour retourner un livre
 void retournerLivre(Livre *livres, Emprunt *emprunts, int nbEmprunts, int nbLivres) {
-    char dateR[20];                          // Date de retour
-    char isbn[20];                            // ISBN du livre
-    int id=0;                                 // ID utilisateur
+    char dateR[20];                                // Date de retour
+    char isbn[20];                                 // ISBN du livre
+    int id = 0;                                    // ID utilisateur
 
     printf("ISBN du livre à retourner : ");
-    lireLigne(isbn, sizeof(isbn));            // Saisie ISBN
+    lireLigne(isbn, sizeof(isbn));                 // Lit l'ISBN
 
     printf("IdUtilisateur : ");
-    scanf("%d", &id);                         // Saisie ID utilisateur
+    scanf("%d", &id);                              // Lit l'ID utilisateur
 
-    // vider le buffer
     int c;
-    while ((c = getchar()) != '\n' && c != EOF);
+    while ((c = getchar()) != '\n' && c != EOF);  // Vide le buffer stdin
 
-    int x = -1;                               // Index de l'emprunt correspondant
+    int x = -1;                                    // Index de l'emprunt correspondant
     for (int i = 0; i < nbEmprunts; i++) {
-        if (strcmp(emprunts[i].isbn, isbn) == 0 &&
-            emprunts[i].idUtilisateur == id &&
-            strcmp(emprunts[i].dateRetour, "-") == 0) {
-            x = i;                            // Trouvé
-            break;
+        if (strcmp(emprunts[i].isbn, isbn) == 0 &&  // Vérifie ISBN
+            emprunts[i].idUtilisateur == id &&     // Vérifie ID utilisateur
+            strcmp(emprunts[i].dateRetour, "-") == 0) { // Vérifie si pas encore rendu
+            x = i;                                  // Stocke l'index
+            break;                                  // Sort de la boucle
         }
     }
 
-    if (x < 0) {                              // Aucun emprunt correspondant
+    if (x < 0) {                                   // Si aucun emprunt trouvé
         printf("Aucun emprunt correspondant.\n");
-        return;
+        return;                                    // Quitte la fonction
     }
 
     printf("Entrer la date de retour : ");
-    lireLigne(dateR, sizeof(dateR));          // Saisie de la date de retour
+    lireLigne(dateR, sizeof(dateR));               // Lit la date de retour
 
-    strcpy(emprunts[x].dateRetour, dateR);    // Enregistre la date de retour
+    strcpy(emprunts[x].dateRetour, dateR);        // Enregistre la date de retour
 
-    // Mettre à jour la disponibilité du livre
+    // Mettre à jour disponibilité du livre
     for (int i = 0; i < nbLivres; i++) {
         if (strcmp(livres[i].isbn, isbn) == 0) {
-            livres[i].disponible = 1;         // Livre disponible à nouveau
-            break;
+            livres[i].disponible = 1;             // Livre maintenant disponible
+            break;                                 // Sort de la boucle
         }
     }
 
-    printf("Retour enregistré avec succès !\n");
+    printf("Retour enregistré avec succès !\n");   // Message de confirmation
 }
 
-// Convertit une date JJ/MM/AAAA en struct tm
-static int parseDate(const char *date, struct tm *out) {
-    int j, m, a;
-    if (sscanf(date, "%d/%d/%d", &j, &m, &a) != 3) // Extraction des valeurs
-        return 0;
-
-    memset(out, 0, sizeof(struct tm));       // Initialise la struct tm
-    out->tm_mday = j;
-    out->tm_mon  = m - 1;                    // tm_mon : 0–11
-    out->tm_year = a - 1900;                 // tm_year : années depuis 1900
-
-    return 1;                                // Succès
-}
-
-// Calcule la différence en jours entre deux dates JJ/MM/AAAA
-int differenceJours(const char *d1, const char *d2) {
-    struct tm t1, t2;
-
-    if (!parseDate(d1, &t1)) return 0;
-    if (!parseDate(d2, &t2)) return 0;
-
-    time_t time1 = mktime(&t1);
-    time_t time2 = mktime(&t2);
-
-    double diff = difftime(time2, time1) / (60 * 60 * 24); // Convertir secondes → jours
-    return (int) diff;
-}
+// -------------------- Gestion des retards et amendes --------------------
 
 // Détection des retards (> 30 jours)
 void detecterRetards(int nbEmprunts, Emprunt *emprunts) {
-    char auj[20];
-    dateAuj(auj);                            // Date actuelle
+    char auj[20];                                 // Chaîne pour stocker la date d'aujourd'hui
+    getDateAujourdhui(auj);                       // Remplit la date actuelle
 
-    int found = 0;
-
+    int found = 0;                                // Indique si un retard est trouvé
     printf("\n===== EMPRUNTS EN RETARD (> 30 jours) =====\n");
 
     for (int i = 0; i < nbEmprunts; i++) {
-        int jours;
-
-        // Non rendu
-        if (strcmp(emprunts[i].dateRetour, "-") == 0) {
+        int jours;                                 // Nombre de jours d'emprunt
+        if (strcmp(emprunts[i].dateRetour, "-") == 0) // Livre non rendu
             jours = differenceJours(emprunts[i].dateEmprunt, auj);
-        } else { // Déjà rendu
+        else                                        // Livre déjà rendu
             jours = differenceJours(emprunts[i].dateEmprunt, emprunts[i].dateRetour);
-        }
 
-        if (jours > 30) {                   // Retard détecté
+        if (jours > 30) {                          // Si retard > 30 jours
             found = 1;
             printf("ISBN : %s | Utilisateur : %d | Emprunt : %s | Retour : %s | (%d jours)\n",
                    emprunts[i].isbn,
@@ -176,48 +174,47 @@ void detecterRetards(int nbEmprunts, Emprunt *emprunts) {
         }
     }
 
-    if (!found)                               // Aucun retard
+    if (!found)                                    // Aucun retard trouvé
         printf("Aucun retard detecte.\n");
 }
 
 // Calcule l'amende pour un emprunt
-int calculerAmende(const char *dateEmprunt, const char *dateRetour) {
-    int jours;
+float calculerAmende(const char *dateEmprunt, const char *dateRetour) {
+    int jours;                                     // Nombre de jours d'emprunt
 
-    if (strcmp(dateRetour, "-") == 0) { // Livre non rendu → comparer à aujourd'hui
+    if (strcmp(dateRetour, "-") == 0) {           // Livre non rendu
         char auj[20];
-        dateAuj(auj);
+        getDateAujourdhui(auj);                   // Date actuelle
         jours = differenceJours(dateEmprunt, auj);
-    } else { // Livre déjà rendu
+    } else {                                      // Livre déjà rendu
         jours = differenceJours(dateEmprunt, dateRetour);
     }
 
-    int retard = jours - 30; // période gratuite de 30 jours
-    if (retard <= 0) return 0;
+    int retard = jours - 30;                       // Période gratuite = 30 jours
+    if (retard <= 0) return 0.0f;                 // Pas d'amende si pas de retard
 
-    return (int)(retard * 0.5); // amende 0,50€ par jour
+    return retard * 0.5f;                          // Amende 0,50€ par jour
 }
 
 // Affiche toutes les amendes
 void afficherAmendes(int nbEmprunts, Emprunt *emprunts) {
     printf("\n========== AMENDES ==========\n");
-
-    int found = 0;
+    int found = 0;                                 // Indique si une amende existe
 
     for (int i = 0; i < nbEmprunts; i++) {
-        float amende = calculerAmende(emprunts[i].dateEmprunt, emprunts[i].dateRetour); // float
+        float amende = calculerAmende(emprunts[i].dateEmprunt, emprunts[i].dateRetour); // Calcule amende
 
-        if (amende > 0) {
+        if (amende > 0.0f) {                      // Si amende > 0
             found = 1;
             printf("Utilisateur %d | ISBN %s | Amende : %.2f €\n",
                    emprunts[i].idUtilisateur,
                    emprunts[i].isbn,
-                   amende);  // directement float
+                   amende);
         }
     }
 
-    if (!found)
+    if (!found)                                    // Si aucune amende
         printf("Aucune amende.\n");
 
-    printf("================================\n");
+    printf("================================\n"); // Fin de l'affichage des amendes
 }
