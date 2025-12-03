@@ -181,21 +181,21 @@ void detecterRetards(int nbEmprunts, Emprunt *emprunts) {
 }
 
 // Calcule l'amende pour un emprunt
-int calculerAmende(const char *dateE, const char *dateR) {
+float calculerAmende(const char *dateEmprunt, const char *dateRetour) { // type float
     int jours;
 
-    if (strcmp(dateR, "-") == 0) {            // Non rendu → comparer à aujourd'hui
+    if (strcmp(dateRetour, "-") == 0) {            // Non rendu → comparer à aujourd'hui
         char auj[20];
-        dateAuj(auj);
-        jours = differenceJours(dateE, auj);
-    } else {                                  // Déjà rendu
-        jours = differenceJours(dateE, dateR);
+        dateAuj(auj);                               // récupère la date du jour
+        jours = differenceJours(dateEmprunt, auj);  // calcule le nombre de jours depuis l'emprunt
+    } else {                                        // Déjà rendu
+        jours = differenceJours(dateEmprunt, dateRetour); // calcule la durée totale
     }
 
-    int retard = jours - 30;                  // Retrait de la période gratuite de 30 jours
-    if (retard <= 0) return 0;
+    int retard = jours - 30;                        // période gratuite de 30 jours
+    if (retard <= 0) return 0.0f;                  // pas de retard → pas d'amende
 
-    return retard * 0.5;                      // 0,50€ par jour de retard
+    return retard * 0.5f;                           // 0,50 € par jour de retard
 }
 
 // Affiche toutes les amendes
@@ -205,14 +205,14 @@ void afficherAmendes(int nbEmprunts, Emprunt *emprunts) {
     int found = 0;
 
     for (int i = 0; i < nbEmprunts; i++) {
-        int amende = calculerAmende(emprunts[i].dateEmprunt, emprunts[i].dateRetour);
+        float amende = calculerAmende(emprunts[i].dateEmprunt, emprunts[i].dateRetour); // float
 
         if (amende > 0) {
             found = 1;
             printf("Utilisateur %d | ISBN %s | Amende : %.2f €\n",
                    emprunts[i].idUtilisateur,
                    emprunts[i].isbn,
-                   (float)amende);
+                   amende);  // directement float
         }
     }
 
