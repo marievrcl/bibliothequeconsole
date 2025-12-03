@@ -15,21 +15,17 @@
 /*
  * VERSION FIXÉE — UTILISE TOUJOURS LE DOSSIER "data/" DU PROJET
  * Peu importe où l'exécutable se trouve (cmake-build-debug/ ou ailleurs),
- * les fichiers seront toujours lus/écrits dans :
- *
- *    ./data/livres.txt
- *    ./data/utilisateurs.txt
- *    ./data/emprunts.txt
+ * les fichiers seront toujours lus/écrits dans ./data/
  */
 
-static const char *DATA_PATH = "../data";
+static const char *DATA_PATH = "../data";  // Chemin du dossier data
 
 /* Assure que le dossier data existe */
 static void ensure_dir_exists(const char *path) {
 #ifdef _WIN32
-    _mkdir(path);
+    _mkdir(path);      // Windows : crée le dossier
 #else
-    mkdir(path, 0777);
+    mkdir(path, 0777); // Linux/Mac : crée le dossier avec droits rwxrwxrwx
 #endif
 }
 
@@ -37,19 +33,20 @@ static void ensure_dir_exists(const char *path) {
  *                      CHARGEMENT LIVRES
  * ============================================================ */
 void chargerLivres(Livre *livres, int *nbLivres) {
-    *nbLivres = 0;
+    *nbLivres = 0;                     // Initialise le compteur de livres
 
-    ensure_dir_exists(DATA_PATH);
+    ensure_dir_exists(DATA_PATH);       // Vérifie que le dossier existe
 
     char path[256];
-    snprintf(path, sizeof(path), "%s/livres.txt", DATA_PATH);
+    snprintf(path, sizeof(path), "%s/livres.txt", DATA_PATH); // Chemin complet du fichier
 
-    FILE *f = fopen(path, "r");
+    FILE *f = fopen(path, "r");        // Ouvre le fichier en lecture
     if (!f) {
         printf("Aucun fichier livres.txt trouvé. Un nouveau sera créé.\n");
         return;
     }
 
+    // Lit chaque ligne et remplit la structure Livre
     while (fscanf(f, "%d;%99[^;];%99[^;];%49[^;];%19[^;];%d;%d\n",
                   &livres[*nbLivres].id,
                   livres[*nbLivres].titre,
@@ -59,27 +56,28 @@ void chargerLivres(Livre *livres, int *nbLivres) {
                   &livres[*nbLivres].annee,
                   &livres[*nbLivres].disponible) == 7)
     {
-        (*nbLivres)++;
+        (*nbLivres)++;                 // Incrémente le nombre de livres lus
     }
 
-    fclose(f);
+    fclose(f);                          // Ferme le fichier
 }
 
 /* ============================================================
  *                      SAUVEGARDE LIVRES
  * ============================================================ */
 void sauvegarderLivres(Livre *livres, int nbLivres) {
-    ensure_dir_exists(DATA_PATH);
+    ensure_dir_exists(DATA_PATH);       // Vérifie que le dossier existe
 
     char path[256];
-    snprintf(path, sizeof(path), "%s/livres.txt", DATA_PATH);
+    snprintf(path, sizeof(path), "%s/livres.txt", DATA_PATH); // Chemin complet
 
-    FILE *f = fopen(path, "w");
+    FILE *f = fopen(path, "w");        // Ouvre le fichier en écriture (écrase l'ancien)
     if (!f) {
         printf("Erreur : impossible d’ouvrir %s\n", path);
         return;
     }
 
+    // Écrit chaque livre dans le fichier au format CSV
     for (int i = 0; i < nbLivres; i++) {
         fprintf(f, "%d;%s;%s;%s;%s;%d;%d\n",
                 livres[i].id,
@@ -91,26 +89,27 @@ void sauvegarderLivres(Livre *livres, int nbLivres) {
                 livres[i].disponible);
     }
 
-    fclose(f);
+    fclose(f);                          // Ferme le fichier
 }
 
 /* ============================================================
  *                     CHARGEMENT UTILISATEURS
  * ============================================================ */
 void chargerUtilisateurs(Utilisateur *users, int *nbUsers) {
-    *nbUsers = 0;
+    *nbUsers = 0;                       // Initialise le compteur
 
-    ensure_dir_exists(DATA_PATH);
+    ensure_dir_exists(DATA_PATH);        // Vérifie que le dossier existe
 
     char path[256];
     snprintf(path, sizeof(path), "%s/utilisateurs.txt", DATA_PATH);
 
-    FILE *f = fopen(path, "r");
+    FILE *f = fopen(path, "r");         // Ouvre le fichier en lecture
     if (!f) {
         printf("Aucun fichier utilisateurs.txt trouvé. Un nouveau sera créé.\n");
         return;
     }
 
+    // Lecture ligne par ligne
     while (fscanf(f, "%d;%49[^;];%49[^;];%99[^;];%d\n",
                   &users[*nbUsers].id,
                   users[*nbUsers].nom,
@@ -133,7 +132,7 @@ void sauvegarderUtilisateurs(Utilisateur *users, int nbUsers) {
     char path[256];
     snprintf(path, sizeof(path), "%s/utilisateurs.txt", DATA_PATH);
 
-    FILE *f = fopen(path, "w");
+    FILE *f = fopen(path, "w");         // Écriture (écrase)
     if (!f) {
         printf("Erreur : impossible d’ouvrir %s\n", path);
         return;
@@ -155,7 +154,7 @@ void sauvegarderUtilisateurs(Utilisateur *users, int nbUsers) {
  *                     CHARGEMENT EMPRUNTS
  * ============================================================ */
 void chargerEmprunts(Emprunt *e, int *nbE) {
-    *nbE = 0;
+    *nbE = 0;                           // Initialise compteur
 
     ensure_dir_exists(DATA_PATH);
 
@@ -168,6 +167,7 @@ void chargerEmprunts(Emprunt *e, int *nbE) {
         return;
     }
 
+    // Lecture ligne par ligne
     while (fscanf(f, "%19[^;];%d;%19[^;];%19[^\n]\n",
                   e[*nbE].isbn,
                   &e[*nbE].idUtilisateur,
@@ -189,18 +189,19 @@ void sauvegarderEmprunts(Emprunt *e, int nbE) {
     char path[256];
     snprintf(path, sizeof(path), "%s/emprunts.txt", DATA_PATH);
 
-    FILE *f = fopen(path, "w");
+    FILE *f = fopen(path, "w");         // Écriture (écrase)
     if (!f) {
         printf("Erreur : impossible d’ouvrir %s\n", path);
         return;
     }
 
+    // Écrit chaque emprunt au format CSV
     for (int i = 0; i < nbE; i++) {
         fprintf(f, "%s;%d;%s;%s\n",
                 e[i].isbn,
                 e[i].idUtilisateur,
                 e[i].dateEmprunt,
-                e[i].dateRetour[0] ? e[i].dateRetour : "-");
+                e[i].dateRetour[0] ? e[i].dateRetour : "-"); // "-" si dateRetour vide
     }
 
     fclose(f);
