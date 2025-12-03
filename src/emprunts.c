@@ -181,21 +181,21 @@ void detecterRetards(int nbEmprunts, Emprunt *emprunts) {
 }
 
 // Calcule l'amende pour un emprunt
-float calculerAmende(const char *dateEmprunt, const char *dateRetour) { // type float
+int calculerAmende(const char *dateEmprunt, const char *dateRetour) {
     int jours;
 
-    if (strcmp(dateRetour, "-") == 0) {            // Non rendu → comparer à aujourd'hui
+    if (strcmp(dateRetour, "-") == 0) { // Livre non rendu → comparer à aujourd'hui
         char auj[20];
-        dateAuj(auj);                               // récupère la date du jour
-        jours = differenceJours(dateEmprunt, auj);  // calcule le nombre de jours depuis l'emprunt
-    } else {                                        // Déjà rendu
-        jours = differenceJours(dateEmprunt, dateRetour); // calcule la durée totale
+        dateAuj(auj);
+        jours = differenceJours(dateEmprunt, auj);
+    } else { // Livre déjà rendu
+        jours = differenceJours(dateEmprunt, dateRetour);
     }
 
-    int retard = jours - 30;                        // période gratuite de 30 jours
-    if (retard <= 0) return 0.0f;                  // pas de retard → pas d'amende
+    int retard = jours - 30; // période gratuite de 30 jours
+    if (retard <= 0) return 0;
 
-    return retard * 0.5f;                           // 0,50 € par jour de retard
+    return (int)(retard * 0.5); // amende 0,50€ par jour
 }
 
 // Affiche toutes les amendes

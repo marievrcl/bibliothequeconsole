@@ -33,7 +33,7 @@ void chargerEmprunts(Emprunt *emprunts, int *nbEmprunts);
 void detecterRetards(int nbEmprunts, Emprunt *emprunts);
 // Analyse les emprunts pour détecter ceux dont la date de retour est dépassée
 
-float calculerAmende(const char *dateE, const char *dateR);
+int calculerAmende(const char *dateE, const char *dateR);
 // Calcule l'amende en fonction de la date d'emprunt et de la date de retour
 
 void afficherAmendes(int nbEmprunts, Emprunt *emprunts);
