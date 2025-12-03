@@ -72,6 +72,12 @@ data/ → contient les fichiers textes
 - Livres les plus empruntés 
 - Taux d’utilisation
 
+### Fonction recherche 
+- Pouvoir rechercher un livre via son titre et afficher ses informations 
+
+### Calculer Amende 
+- Pouvoir calculer et affciher une amende dans le cas d'un retard de retour de livre
+
 ## Améliorations futures
 
 - Interface graphique complète 
