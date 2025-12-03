@@ -168,11 +168,11 @@ void chargerEmprunts(Emprunt *e, int *nbE) {
         return;
     }
 
-    while (fscanf(f, "%d;%d;%10[^;];%10[^\n]\n",
-              &e[*nbE].isbn,
-              &e[*nbE].idUtilisateur,
-              e[*nbE].dateEmprunt,
-              e[*nbE].dateRetour) == 4)
+    while (fscanf(f, "%19[^;];%d;%19[^;];%19[^\n]\n",
+                  e[*nbE].isbn,
+                  &e[*nbE].idUtilisateur,
+                  e[*nbE].dateEmprunt,
+                  e[*nbE].dateRetour) == 4)
     {
         (*nbE)++;
     }
@@ -196,16 +196,16 @@ void sauvegarderEmprunts(Emprunt *e, int nbE) {
     }
 
     for (int i = 0; i < nbE; i++) {
-        fprintf(f, "%d;%d;%s;%s\n",
+        fprintf(f, "%s;%d;%s;%s\n",
                 e[i].isbn,
                 e[i].idUtilisateur,
                 e[i].dateEmprunt,
-                e[i].dateRetour[0] ? e[i].dateRetour : "");
+                e[i].dateRetour[0] ? e[i].dateRetour : "-");
     }
-
 
     fclose(f);
 }
+
 
 
 

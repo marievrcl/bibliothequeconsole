@@ -44,7 +44,7 @@ void emprunterLivre(Livre *livres, int nbLivres, Utilisateur *utilisateurs, int 
 
     // Vérifier disponibilité du livre
     for (int i = 0; i < nbLivres; i++) {
-        if (strcmp(livres[i].isbn, isbn) == 0) {   // IMPORTANT !
+        if (strcmp(livres[i].isbn, isbn) == 0) {
             dispo = livres[i].disponible;
         }
     }
@@ -55,8 +55,7 @@ void emprunterLivre(Livre *livres, int nbLivres, Utilisateur *utilisateurs, int 
     }
 
     // copier ISBN
-    strncpy(emprunts[*nbEmprunts].isbn, isbn, sizeof(emprunts[*nbEmprunts].isbn)-1);
-    emprunts[*nbEmprunts].isbn[sizeof(emprunts[*nbEmprunts].isbn)-1] = '\0';
+    strcpy(emprunts[*nbEmprunts].isbn,isbn);
 
     emprunts[*nbEmprunts].idUtilisateur = idUtilisateur;
 
@@ -76,39 +75,51 @@ void emprunterLivre(Livre *livres, int nbLivres, Utilisateur *utilisateurs, int 
 }
 
 
-void retournerLivre(Livre *livres,Emprunt *emprunts, int nbEmprunts, int idLivre, const char *dateRetour) {
+void retournerLivre(Livre *livres, Emprunt *emprunts, int nbEmprunts, int nbLivres) {
     char dateR[20];
     char isbn[20];
     int id=0;
+
     printf("ISBN du livre à retourner : ");
-    lireLigne(isbn,sizeof(isbn));
+    lireLigne(isbn, sizeof(isbn));
+
     printf("IdUtilisateur : ");
     scanf("%d", &id);
 
+    // vider le buffer
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
 
-    int x=-1;
-    for (int i=0;i<nbEmprunts;i++){
-        if (strcmp(emprunts[i].isbn,isbn)==0 && emprunts[i].idUtilisateur ==id && strcmp(emprunts[i].dateRetour,"-")) {
-            x=i;
+    int x = -1;
+    for (int i = 0; i < nbEmprunts; i++) {
+        if (strcmp(emprunts[i].isbn, isbn) == 0 &&
+            emprunts[i].idUtilisateur == id &&
+            strcmp(emprunts[i].dateRetour, "-") == 0) {
+            x = i;
+            break;
+            }
+    }
+
+    if (x < 0) {
+        printf("Aucun emprunt correspondant.\n");
+        return;
+    }
+
+    printf("Entrer la date de retour : ");
+    lireLigne(dateR, sizeof(dateR));
+
+    strcpy(emprunts[x].dateRetour, dateR);
+
+    for (int i = 0; i < nbLivres; i++) {
+        if (strcmp(livres[i].isbn, isbn) == 0) {
+            livres[i].disponible = 1;
             break;
         }
     }
 
-    if (x<0) {
-        printf("Aucun emprunt correspondant");
-    }
-
-    printf("entrer la date de retour");
-    lireLigne(dateR,sizeof(dateR));
-
-    strcpy(emprunts[x].dateRetour,dateR);
-
-    for (int i=0; i<100;i++) {
-        if (strcmp(livres[i].isbn,isbn)==0) {
-            livres[i].disponible=1;
-        }
-    }
+    printf("Retour enregistré avec succès !\n");
 }
+
 
 // Convertit JJ/MM/AAAA → struct tm
 static int parseDate(const char *date, struct tm *out) {

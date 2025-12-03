@@ -20,7 +20,7 @@ typedef struct {
 void emprunterLivre(Livre *livres, int nbLivres, Utilisateur *utilisateurs, int nbUsers,
                     Emprunt *emprunts, int *nbEmprunts);
 
-void retournerLivre(Livre *livres,Emprunt *emprunts, int nbEmprunts, int idLivre, const char *dateRetour);
+void retournerLivre(Livre *livres, Emprunt *emprunts, int nbEmprunts, int nbLivres);
 
 void chargerEmprunts(Emprunt *emprunts, int *nbEmprunts);
 

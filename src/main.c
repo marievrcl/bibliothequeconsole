@@ -162,11 +162,7 @@ void lancerMenuConsole() {
                             emprunterLivre(livres, nbLivres, utilisateurs, nbUsers, emprunts, &nbEmprunts);
                             break;
                         case 2: {
-                            int idLivre;
-                                char dateRetour[11];
-                                fgets(dateRetour, sizeof(dateRetour), stdin);
-                                dateRetour[strcspn(dateRetour, "\n")] = 0; // enlever \n
-                                retournerLivre(livres,emprunts, nbEmprunts, idLivre, dateRetour);
+                                retournerLivre(livres,emprunts, nbEmprunts, nbLivres);
                             break;
                         }
 
