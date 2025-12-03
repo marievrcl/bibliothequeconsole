@@ -20,26 +20,30 @@
 #include "emprunts.h"
 
 /**
- * Affiche un récapitulatif des statistiques :
- * - nombre de livres, utilisateurs, emprunts
- * - taux de disponibilité
- * - utilisateur le plus actif
- * - livre le plus emprunté
+ * Affiche un récapitulatif des statistiques générales de la bibliothèque
+ * Inclut :
+ * - le nombre total de livres, d'utilisateurs et d'emprunts
+ * - le taux de disponibilité des livres
+ * - l'utilisateur le plus actif (ayant emprunté le plus)
+ * - le livre le plus emprunté
  */
 void afficherStatistiques(Emprunt *emprunts, int nbEmprunts,
                           Utilisateur *users, int nbUsers,
                           Livre *livres, int nbLivres);
 
 /**
- * Calcule et affiche le ou les livres les plus empruntés.
+ * Analyse les emprunts et affiche le ou les livres les plus empruntés.
+ * Utilise le tableau d'emprunts pour compter combien de fois chaque livre a été emprunté.
  */
 void livresLesPlusEmpruntes(Emprunt *emprunts, int nbEmprunts,
                             Livre *livres, int nbLivres);
 
 /**
- * Calcule et affiche l'utilisateur ayant effectué le plus d'emprunts.
+ * Analyse les emprunts et affiche l'utilisateur le plus actif.
+ * L'utilisateur le plus actif est celui qui a effectué le plus d'emprunts.
  */
 void utilisateurLePlusActif(Emprunt *emprunts, int nbEmprunts,
                             Utilisateur *users, int nbUsers);
 
 #endif // STATS_H
+// Fin de la protection contre inclusion multiple
