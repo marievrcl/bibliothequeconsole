@@ -6,7 +6,9 @@ Le projet a été réalisé sur 7 semaines dans le cadre des cours de bases de d
 ## Quels sont les objectifs techniques ?
 Sur le plan technique, il s'agissait de concevoir un modèle relationnel avec MCD et MLD, de développer une application C modulaire en manipulant structures, pointeurs et fichiers, et de gérer toutes les entités du système. L’équipe a aussi ajouté des fonctionnalités avancées, comme des statistiques sur les emprunts, pour rendre l’application plus complète. Pour le développement, CLion a été utilisé pour le code et MySQL pour la base de données.
 
-## Structure du projet 
+## Structure du projet
+
+```
 bibliothequeconsole/
 │── CMakeLists.txt
 │── README.md
@@ -29,9 +31,11 @@ bibliothequeconsole/
 │   └── utils.c
 │
 └── data/
-├── livres.txt
-├── utilisateurs.txt
-└── emprunts.txt
+    ├── livres.txt
+    ├── utilisateurs.txt
+    └── emprunts.txt
+```
+
 
 include/ → contient tous les fichiers .h (déclarations, structures, prototypes)
 
