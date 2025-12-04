@@ -2,6 +2,20 @@
 // main.c
 // Created by Marie Viricel on 02/12/2025.
 //
+//
+// main.c
+// Created by Marie Viricel on 02/12/2025.
+//
+
+//
+// main.c
+// Created by Marie Viricel on 02/12/2025.
+//
+
+//
+// main.c
+// Created by Marie Viricel on 02/12/2025.
+//
 
 #include <stdio.h>
 #include <string.h>
@@ -210,6 +224,11 @@ int main(void) {
     lancerMenuConsole(); // Lance le menu principal
     return 0; // Fin du programme
 }
+
+
+
+
+
 
 
 

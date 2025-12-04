@@ -1,6 +1,15 @@
 //
 // Created by Marie Viricel on 02/12/2025.
 //
+//
+// Created by Marie Viricel on 02/12/2025.
+//
+//
+// Created by Marie Viricel on 02/12/2025.
+//
+//
+// Created by Marie Viricel on 02/12/2025.
+//
 #ifndef EMPRUNTS_H
 #define EMPRUNTS_H
 
@@ -41,6 +50,10 @@ void afficherAmendes(int nbEmprunts, Emprunt *emprunts);
 
 #endif
 // Fin du fichier d'en-tête, protection contre inclusion multiple
+
+
+
+
 
 
 
